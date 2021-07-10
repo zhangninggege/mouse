@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            background-color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        var list = [];
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        function random(min, max) {
+            return Math.random() * (max - min) + min
+        }
+
+        function Circle(x, y) {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 3;
+            this.vy = (Math.random() - 0.5) * 3;
+            this.a = 0.98;
+            this.color = `rgb(${random(0,255)},${random(0,255)},${random(0,255)})`
+        };
+
+        Circle.prototype = {
+            draw() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.globalCompositeOperation = 'lighter'
+                context.globalAlpha = this.a
+                context.arc(this.x, this.y, 30, 0, Math.PI * 2);
+                context.fill();
+                this.update()
+            },
+            update(){
+                this.x +=this.vx;
+                this.y +=this.vy;
+                this.a *=0.98
+                
+            }
+        }
+        function render(){
+            context.clearRect(0,0,canvas.width,canvas.height)
+            list.forEach((item,index)=>{
+                item.draw()
+            })
+            requestAnimationFrame(render)
+        }
+        render()
+
+        canvas.addEventListener('touchmove', function (e) {
+            list.push(new Circle( e.targetTouches[0].pageX,  e.targetTouches[0].pageY));
+            
+        })
+    </script>
+</body>
+
+</html>
